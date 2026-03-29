@@ -6,6 +6,7 @@ import com.first_project.journalApp.entity.Users;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import java.time.LocalDateTime;
@@ -21,13 +22,15 @@ public class JournalEntryService {
     @Autowired
     private UserService userService;
 
+    @Transactional
     public void saveEntry(JournalEntry journalEntry, String username) {
         Users user = userService.findByUsername(username);
         journalEntry.setDate(LocalDateTime.now());
         JournalEntry saved = journalEntryRepo.save(journalEntry);
+//        user.setUsername(null);
         user.getJournalEntries().add(saved);
         userService.saveUser(user);
-    }
+    }   
 
     public void save(JournalEntry journalEntry) {
         journalEntryRepo.save(journalEntry);
